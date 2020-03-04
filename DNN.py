@@ -15,13 +15,40 @@ class Model(nn.Module):
         super().__init__()
         self.fc1 = nn.Linear(in_features, h1)
         self.fc2 = nn.Linear(h1, h2)
-        self.out = nn.Linear(h2, out_features)
+
+        self.cat1_l1 = nn.Linear(h2, out_features)
+        self.cat2_l1 = nn.Linear(h2, out_features)
+        self.cat3_l1 = nn.Linear(h2, out_features)
+
+        self.cat1_l2 = nn.Linear(out_features, out_features)
+        self.cat2_l2 = nn.Linear(out_features, out_features)
+        self.cat3_l2 = nn.Linear(out_features, out_features)
+
+        self.out1 = nn.Linear(out_features, 1)
+        self.out2 = nn.Linear(out_features, 1)
+        self.out3 = nn.Linear(out_features, 1)
+
+        self.out = nn.Linear(out_features, out_features)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = self.out(x)
-        return x
+
+        x1 = F.relu(self.cat1_l1(x))
+        x2 = F.relu(self.cat2_l1(x))
+        x3 = F.relu(self.cat3_l1(x))
+
+        x1 = F.relu(self.cat1_l2(x1))
+        x2 = F.relu(self.cat2_l2(x2))
+        x3 = F.relu(self.cat3_l2(x3))
+
+        x1 = self.out1(x1)
+        x2 = self.out2(x2)
+        x3 = self.out3(x3)
+
+        out = self.out(torch.cat((x1, x2, x3), dim=1))
+
+        return out
 
 
 if __name__ == "__main__":
