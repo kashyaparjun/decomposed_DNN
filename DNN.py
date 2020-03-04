@@ -16,18 +16,22 @@ class Model(nn.Module):
         self.fc1 = nn.Linear(in_features, h1)
         self.fc2 = nn.Linear(h1, h2)
 
+        # Decomposed layer 1
         self.cat1_l1 = nn.Linear(h2, out_features)
         self.cat2_l1 = nn.Linear(h2, out_features)
         self.cat3_l1 = nn.Linear(h2, out_features)
 
+        # Decomposed layer 2
         self.cat1_l2 = nn.Linear(out_features, out_features)
         self.cat2_l2 = nn.Linear(out_features, out_features)
         self.cat3_l2 = nn.Linear(out_features, out_features)
 
+        # Merging 3 neurons to 1
         self.out1 = nn.Linear(out_features, 1)
         self.out2 = nn.Linear(out_features, 1)
         self.out3 = nn.Linear(out_features, 1)
 
+        # Final output layer
         self.out = nn.Linear(out_features, out_features)
 
     def forward(self, x):
